@@ -18,10 +18,10 @@ app.post('/gpt', async (req, res) => {
   }
 
   try {
-    const openaiResponse = await axios.post(
-      'https://api.openai.com/v1/chat/completions',
+    const response = await axios.post(
+      'https://openrouter.ai/api/v1/chat/completions',
       {
-        model: 'gpt-3.5-turbo',
+        model: 'openai/gpt-3.5-turbo', // работаем через OpenRouter!
         messages: [
           { role: 'user', content: prompt }
         ],
@@ -29,23 +29,23 @@ app.post('/gpt', async (req, res) => {
       },
       {
         headers: {
-          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+          'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
           'Content-Type': 'application/json'
         }
       }
     );
 
     res.json({
-      response: openaiResponse.data.choices[0].message.content
+      response: response.data.choices[0].message.content
     });
   } catch (error) {
-    console.error('Error from OpenAI:', error.response?.data || error.message);
-    res.status(500).json({ error: 'Failed to get response from OpenAI', detail: error.response?.data });
+    console.error('Error from OpenRouter:', error.response?.data || error.message);
+    res.status(500).json({ error: 'Failed to get response from OpenRouter', detail: error.response?.data });
   }
 });
 
 app.get('/', (req, res) => {
-  res.send('GPT Proxy is running 🚀');
+  res.send('GPT Proxy is running 🚀 (OpenRouter)');
 });
 
 app.listen(port, () => {
